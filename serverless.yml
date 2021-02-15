@@ -1,0 +1,102 @@
+service: employee-time-management-api
+
+useDotenv: true
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: eu-north-1
+  timeout: 60
+  environment:
+    DB_URI: ${env:DB_URI}
+    ACCESS_TOKEN_SECRET: ${env:ACCESS_TOKEN_SECRET}
+  vpc:
+    securityGroupIds:
+      - ${env:SECURITY_GROUP}
+    subnetIds:
+      - ${env:SUBNET}
+  iamRoleStatements:
+    -  Effect: "Allow"
+       Action:
+         - "rds:*"
+         - "ec2:CreateNetworkInterface"
+         - "ec2:DescribeNetworkInterfaces"
+         - "ec2:DeleteNetworkInterface"
+         - "logs:CreateLogGroup"
+         - "logs:CreateLogStream"
+         - "logs:PutLogEvents"
+       Resource: "*"
+    -  Effect: "Allow"
+       Action:
+         - "s3:ListBucket"
+       Resource:
+         Fn::Join:
+           - ""
+           - - "arn:aws:s3:::"
+             - Ref: ServerlessDeploymentBucket
+    -  Effect: "Allow"
+       Action:
+         - "s3:PutObject"
+       Resource:
+         Fn::Join:
+           - ""
+           - - "arn:aws:s3:::"
+             - Ref: ServerlessDeploymentBucket
+             - "/*"
+
+plugins:
+  - serverless-offline
+
+functions:
+  register:
+    handler: src/api/users/register.handler
+    events:
+      - http:
+          path: register
+          method: post
+  login:
+    handler: src/api/users/login.handler
+    events:
+      - http:
+          path: login
+          method: post
+  getTimelog:
+    handler: src/api/timelogs/get.handler
+    events:
+      - http:
+          path: users/{userId}/timelogs/{id}
+          method: get
+  listTimelog:
+    handler: src/api/timelogs/list.handler
+    events:
+      - http:
+          path: users/{userId}/timelogs
+          method: get
+  submitTimelog:
+    handler: src/api/timelogs/submit.handler
+    events:
+      - http:
+          path: users/{userId}/timelogs
+          method: post
+  endTimelog:
+    handler: src/api/timelogs/end.handler
+    events:
+      - http:
+          path: users/{userId}/timelogs/{id}/end
+          method: put
+  editTimelog:
+    handler: src/api/timelogs/edit.handler
+    events:
+      - http:
+          path: users/{userId}/timelogs/{id}
+          method: put
+  deleteTimelog:
+    handler: src/api/timelogs/delete.handler
+    events:
+      - http:
+          path: users/{userId}/timelogs/{id}
+          method: delete
