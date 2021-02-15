@@ -10,12 +10,13 @@ You can access deployed version of API here: https://gyrone4s8k.execute-api.eu-n
 
 Example of requests:
 
-```
+```shell
 curl -d '{ "email": "test@test.com", "name": "test", "surname": "test",  "password": "test" }' https://gyrone4s8k.execute-api.eu-north-1.amazonaws.com/prod/register
 ```
 
-```
+```shell
 curl -H "Authorization: Bearer token" -d '{ "description": "test", "startDateTime": "2015-05-01T19:38:34.203Z",  "endDateTime": "2015-05-02T19:38:34.203Z" }' https://gyrone4s8k.execute-api.eu-north-1.amazonaws.com/prod/users/{userId}/timelogs
+
 curl -H "Authorization: Bearer token" -d '{ "description": "test", "startDateTime": "2015-05-01",  "endDateTime": "2015-05-02" }' https://gyrone4s8k.execute-api.eu-north-1.amazonaws.com/prod/users/{userId}/timelogs
 ```
 
@@ -45,7 +46,7 @@ DB_URI=<postgres db>
 API=http://localhost:3000/dev
 ```
 
-Note: If you created Postgres DB with Docker then DB_URI will be `postgres://postgres:postgres@localhost:5432/time_management` or `postgres://postgres:postgres@192.168.1.101:5432/time_management`
+Note: If you created Postgres DB with Docker then DB_URI will be `postgres://postgres:postgres@localhost:5432/time_management` or `postgres://postgres:postgres@< your local machine IP >:5432/time_management`
 
 ## Running locally
 
